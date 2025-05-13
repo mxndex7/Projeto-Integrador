@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novo Curso - CertyHub</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+  <div id="app">
+    <div class="dashboard">
+      <button class="sidebar-toggle toggle-button-show" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <i class="fas fa-certificate"></i> CertyHub
+          </div>
+        </div>
+        <div class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="dashboard.html" class="dashboard-link">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+              </a>
+            </li>
+            <li>
+              <a href="cursos.html" class="cursos-link active">
+                <i class="fas fa-book"></i> Cursos
+              </a>
+            </li>
+            <li>
+              <a href="alunos.html" class="alunos-link">
+                <i class="fas fa-user-graduate"></i> Alunos
+              </a>
+            </li>
+            <li>
+              <a href="certificados.html" class="certificados-link">
+                <i class="fas fa-certificate"></i> Certificados
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="main-content">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Novo Curso</h1>
+          <div class="user-dropdown">
+            <span id="userName">Usuário <i class="fas fa-chevron-down"></i></span>
+            <div class="dropdown-content">
+              <a href="#"><i class="fas fa-user-circle"></i> Perfil</a>
+              <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dashboard-content">
+          <div class="header-actions">
+            <h2>Novo Curso</h2>
+          </div>
+          
+          <div class="form-card">
+            <form id="novoCursoForm">
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="nomeCurso">Nome do Curso</label>
+                    <input type="text" id="nomeCurso" class="form-control" required>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-col form-col-6">
+                  <div class="form-group">
+                    <label for="cargaHoraria">Carga Horária (horas)</label>
+                    <input type="number" id="cargaHoraria" class="form-control" required>
+                  </div>
+                </div>
+                
+                <div class="form-col form-col-6">
+                  <div class="form-group">
+                    <label for="responsavel">Responsável</label>
+                    <input type="text" id="responsavel" class="form-control" required>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="descricao">Descrição do Curso</label>
+                    <textarea id="descricao" class="form-control" rows="4" required></textarea>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-col form-col-6">
+                  <div class="form-group">
+                    <label for="dataInicio">Data de Início</label>
+                    <input type="date" id="dataInicio" class="form-control" required>
+                  </div>
+                </div>
+                
+                <div class="form-col form-col-6">
+                  <div class="form-group">
+                    <label for="dataFim">Data de Término</label>
+                    <input type="date" id="dataFim" class="form-control" required>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="modeloCertificado">Modelo de Certificado</label>
+                    <select id="modeloCertificado" class="form-control" required>
+                      <option value="">Selecione um modelo</option>
+                      <option value="1">Modelo Padrão</option>
+                      <option value="2">Modelo Alternativo</option>
+                      <option value="3">Modelo Premium</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="btn-row">
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='cursos.html'">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar Curso</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

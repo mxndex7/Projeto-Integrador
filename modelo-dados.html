@@ -1,0 +1,334 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modelagem de Dados - Sistema de Certificados</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  <style>
+    .modelo-container {
+      padding: 20px;
+    }
+    .modelo-card {
+      background-color: var(--bg-secondary);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .entity-title {
+      color: var(--accent-color);
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+    .attribute-row {
+      display: flex;
+      margin-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 5px;
+    }
+    .attribute-name {
+      width: 25%;
+      font-weight: bold;
+    }
+    .attribute-type {
+      width: 20%;
+      color: var(--text-secondary);
+    }
+    .attribute-description {
+      width: 55%;
+    }
+    .relationship {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: var(--bg-tertiary);
+      border-radius: 4px;
+    }
+    .json-example {
+      background-color: var(--bg-tertiary);
+      padding: 15px;
+      border-radius: 4px;
+      font-family: monospace;
+      white-space: pre;
+      overflow-x: auto;
+      margin-top: 15px;
+    }
+    .btn-back {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="dashboard">
+      <button class="sidebar-toggle toggle-button-show" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <i class="fas fa-certificate"></i> CertyHub
+          </div>
+        </div>
+        <div class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="dashboard.html" class="dashboard-link">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+              </a>
+            </li>
+            <li>
+              <a href="cursos.html" class="cursos-link">
+                <i class="fas fa-book"></i> Cursos
+              </a>
+            </li>
+            <li>
+              <a href="alunos.html" class="alunos-link">
+                <i class="fas fa-user-graduate"></i> Alunos
+              </a>
+            </li>
+            <li>
+              <a href="certificados.html" class="certificados-link">
+                <i class="fas fa-certificate"></i> Certificados
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="main-content">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Modelagem de Dados</h1>
+          <div class="user-dropdown">
+            <span id="userName">Usuário <i class="fas fa-chevron-down"></i></span>
+            <div class="dropdown-content">
+              <a href="#"><i class="fas fa-user-circle"></i> Perfil</a>
+              <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dashboard-content">
+          <button class="btn btn-secondary btn-back" onclick="window.location.href='dashboard.html'">
+            <i class="fas fa-arrow-left"></i> Voltar ao Dashboard
+          </button>
+          
+          <div class="modelo-container">
+            <div class="modelo-card">
+              <h2 class="entity-title">Entidade: Aluno</h2>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">id</div>
+                <div class="attribute-type">Integer</div>
+                <div class="attribute-description">Identificador único do aluno (chave primária)</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">nome</div>
+                <div class="attribute-type">String</div>
+                <div class="attribute-description">Nome completo do aluno</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">cpf</div>
+                <div class="attribute-type">String</div>
+                <div class="attribute-description">CPF do aluno (único)</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">email</div>
+                <div class="attribute-type">String</div>
+                <div class="attribute-description">Endereço de e-mail do aluno (único)</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">telefone</div>
+                <div class="attribute-type">String</div>
+                <div class="attribute-description">Número de telefone do aluno</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">dataNascimento</div>
+                <div class="attribute-type">Date</div>
+                <div class="attribute-description">Data de nascimento do aluno</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">endereco</div>
+                <div class="attribute-type">String</div>
+                <div class="attribute-description">Endereço completo do aluno</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">cidade</div>
+                <div class="attribute-type">String</div>
+                <div class="attribute-description">Cidade do aluno</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">estado</div>
+                <div class="attribute-type">String</div>
+                <div class="attribute-description">Estado do aluno</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">dataCadastro</div>
+                <div class="attribute-type">DateTime</div>
+                <div class="attribute-description">Data e hora de cadastro do aluno</div>
+              </div>
+              
+              <div class="relationship">
+                <h3>Relacionamentos:</h3>
+                <p><strong>Aluno-Curso:</strong> Muitos para Muitos (N:N) - Um aluno pode estar matriculado em vários cursos, e um curso pode ter vários alunos</p>
+                <p><strong>Aluno-Certificado:</strong> Um para Muitos (1:N) - Um aluno pode ter vários certificados</p>
+              </div>
+              
+              <div class="json-example">
+<strong>Exemplo de JSON para um Aluno:</strong>
+{
+  "id": 1,
+  "nome": "João Silva",
+  "cpf": "123.456.789-00",
+  "email": "joao.silva@email.com",
+  "telefone": "(11) 98765-4321",
+  "dataNascimento": "1990-05-15",
+  "endereco": "Rua das Flores, 123",
+  "cidade": "São Paulo",
+  "estado": "SP",
+  "dataCadastro": "2023-01-10T14:30:00",
+  "cursos": [
+    {
+      "id": 1,
+      "nome": "Desenvolvimento Web"
+    },
+    {
+      "id": 3,
+      "nome": "Python Avançado"
+    }
+  ],
+  "certificados": [
+    {
+      "id": 5,
+      "cursoId": 1,
+      "dataEmissao": "2023-04-20T10:15:00",
+      "codigo": "CERT-001-2023"
+    }
+  ]
+}
+              </div>
+            </div>
+            
+            <div class="modelo-card">
+              <h2 class="entity-title">Entidade: Curso</h2>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">id</div>
+                <div class="attribute-type">Integer</div>
+                <div class="attribute-description">Identificador único do curso (chave primária)</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">nome</div>
+                <div class="attribute-type">String</div>
+                <div class="attribute-description">Nome do curso</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">descricao</div>
+                <div class="attribute-type">Text</div>
+                <div class="attribute-description">Descrição detalhada do curso</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">cargaHoraria</div>
+                <div class="attribute-type">Integer</div>
+                <div class="attribute-description">Carga horária em horas</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">responsavel</div>
+                <div class="attribute-type">String</div>
+                <div class="attribute-description">Nome do responsável pelo curso</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">dataInicio</div>
+                <div class="attribute-type">Date</div>
+                <div class="attribute-description">Data de início do curso</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">dataFim</div>
+                <div class="attribute-type">Date</div>
+                <div class="attribute-description">Data de término do curso</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">modeloCertificado</div>
+                <div class="attribute-type">Integer</div>
+                <div class="attribute-description">ID do modelo de certificado a ser utilizado</div>
+              </div>
+              
+              <div class="relationship">
+                <h3>Relacionamentos:</h3>
+                <p><strong>Curso-Aluno:</strong> Muitos para Muitos (N:N) - Um curso pode ter vários alunos, e um aluno pode estar matriculado em vários cursos</p>
+                <p><strong>Curso-Certificado:</strong> Um para Muitos (1:N) - Um curso pode ter vários certificados emitidos</p>
+              </div>
+            </div>
+            
+            <div class="modelo-card">
+              <h2 class="entity-title">Entidade: Certificado</h2>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">id</div>
+                <div class="attribute-type">Integer</div>
+                <div class="attribute-description">Identificador único do certificado (chave primária)</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">alunoId</div>
+                <div class="attribute-type">Integer</div>
+                <div class="attribute-description">ID do aluno (chave estrangeira)</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">cursoId</div>
+                <div class="attribute-type">Integer</div>
+                <div class="attribute-description">ID do curso (chave estrangeira)</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">codigo</div>
+                <div class="attribute-type">String</div>
+                <div class="attribute-description">Código único do certificado para validação</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">dataEmissao</div>
+                <div class="attribute-type">DateTime</div>
+                <div class="attribute-description">Data e hora de emissão do certificado</div>
+              </div>
+              
+              <div class="attribute-row">
+                <div class="attribute-name">urlPDF</div>
+                <div class="attribute-type">String</div>
+                <div class="attribute-description">URL para download do certificado em PDF</div>
+              </div>
+              
+              <div class="relationship">
+                <h3>Relacionamentos:</h3>
+                <p><strong>Certificado-Aluno:</strong> Muitos para Um (N:1) - Vários certificados podem pertencer a um aluno</p>
+                <p><strong>Certificado-Curso:</strong> Muitos para Um (N:1) - Vários certificados podem ser emitidos para um curso</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

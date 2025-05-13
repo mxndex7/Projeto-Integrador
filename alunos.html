@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alunos - CertyHub</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+  <div id="app">
+    <div class="dashboard">
+      <button class="sidebar-toggle toggle-button-show" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <i class="fas fa-certificate"></i> CertyHub
+          </div>
+        </div>
+        <div class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="dashboard.html" class="dashboard-link">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+              </a>
+            </li>
+            <li>
+              <a href="cursos.html" class="cursos-link">
+                <i class="fas fa-book"></i> Cursos
+              </a>
+            </li>
+            <li>
+              <a href="alunos.html" class="alunos-link active">
+                <i class="fas fa-user-graduate"></i> Alunos
+              </a>
+            </li>
+            <li>
+              <a href="certificados.html" class="certificados-link">
+                <i class="fas fa-certificate"></i> Certificados
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="main-content">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Alunos</h1>
+          <div class="user-dropdown">
+            <span id="userName">Usuário <i class="fas fa-chevron-down"></i></span>
+            <div class="dropdown-content">
+              <a href="#"><i class="fas fa-user-circle"></i> Perfil</a>
+              <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dashboard-content">
+          <div class="header-actions">
+            <h2>Gerenciamento de Alunos</h2>
+            <div>
+              <button class="btn btn-primary" onclick="window.location.href='alunos-novo.html'">
+                <i class="fas fa-plus"></i> Novo Aluno
+              </button>
+              <button class="btn btn-secondary" onclick="debugAlunos()" style="margin-left: 8px;">
+                <i class="fas fa-bug"></i> Debug Alunos
+              </button>
+            </div>
+          </div>
+          
+          <script>
+            function debugAlunos() {
+              const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+              console.log('Dados dos alunos:', alunos);
+              alert('Verificando dados dos alunos. Abra o console do navegador (F12) para mais detalhes.');
+              
+              if (alunos.length === 0) {
+                alert('Nenhum aluno encontrado no localStorage.');
+              } else {
+                alert(`Encontrados ${alunos.length} alunos no localStorage.`);
+              }
+            }
+          </script>
+          
+          <div class="card">
+            <div class="card-body">
+              <div class="table-container">
+                <table id="alunosTable">
+                  <thead>
+                    <tr>
+                      <th>Nome</th>
+                      <th>Email</th>
+                      <th>CPF</th>
+                      <th>Cursos Matriculados</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Os alunos serão carregados dinamicamente pelo JavaScript -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

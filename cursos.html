@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cursos - CertyHub</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+  <div id="app">
+    <div class="dashboard">
+      <button class="sidebar-toggle toggle-button-show" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <i class="fas fa-certificate"></i> CertyHub
+          </div>
+        </div>
+        <div class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="dashboard.html" class="dashboard-link">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+              </a>
+            </li>
+            <li>
+              <a href="cursos.html" class="cursos-link active">
+                <i class="fas fa-book"></i> Cursos
+              </a>
+            </li>
+            <li>
+              <a href="alunos.html" class="alunos-link">
+                <i class="fas fa-user-graduate"></i> Alunos
+              </a>
+            </li>
+            <li>
+              <a href="certificados.html" class="certificados-link">
+                <i class="fas fa-certificate"></i> Certificados
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="main-content">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Cursos</h1>
+          <div class="user-dropdown">
+            <span id="userName">Usuário <i class="fas fa-chevron-down"></i></span>
+            <div class="dropdown-content">
+              <a href="#"><i class="fas fa-user-circle"></i> Perfil</a>
+              <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dashboard-content">
+          <div class="header-actions">
+            <h2>Gerenciamento de Cursos</h2>
+            <button class="btn btn-primary" onclick="window.location.href='cursos-novo.html'">
+              <i class="fas fa-plus"></i> Novo Curso
+            </button>
+          </div>
+          
+          <div class="card">
+            <div class="card-body">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nome do Curso</th>
+                      <th>Carga Horária</th>
+                      <th>Responsável</th>
+                      <th>Status</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Desenvolvimento Web</td>
+                      <td>60h</td>
+                      <td>Prof. Carlos Silva</td>
+                      <td>Ativo</td>
+                      <td>
+                        <div class="action-btns">
+                          <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                          <button class="btn-icon btn-delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>UX/UI Design</td>
+                      <td>40h</td>
+                      <td>Profa. Ana Oliveira</td>
+                      <td>Ativo</td>
+                      <td>
+                        <div class="action-btns">
+                          <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                          <button class="btn-icon btn-delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Python Avançado</td>
+                      <td>80h</td>
+                      <td>Prof. Marcos Santos</td>
+                      <td>Ativo</td>
+                      <td>
+                        <div class="action-btns">
+                          <button class="btn-icon btn-edit"><i class="fas fa-edit"></i></button>
+                          <button class="btn-icon btn-delete"><i class="fas fa-trash"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

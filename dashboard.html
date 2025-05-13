@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - CertyHub</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+  <div id="app">
+    <div class="dashboard">
+      <button class="sidebar-toggle toggle-button-show" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <i class="fas fa-certificate"></i> CertyHub
+          </div>
+        </div>
+        <div class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="dashboard.html" class="dashboard-link active">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+              </a>
+            </li>
+            <li>
+              <a href="cursos.html" class="cursos-link">
+                <i class="fas fa-book"></i> Cursos
+              </a>
+            </li>
+            <li>
+              <a href="alunos.html" class="alunos-link">
+                <i class="fas fa-user-graduate"></i> Alunos
+              </a>
+            </li>
+            <li>
+              <a href="certificados.html" class="certificados-link">
+                <i class="fas fa-certificate"></i> Certificados
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="main-content">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Dashboard</h1>
+          <div class="user-dropdown">
+            <span id="userName">Usuário <i class="fas fa-chevron-down"></i></span>
+            <div class="dropdown-content">
+              <a href="#"><i class="fas fa-user-circle"></i> Perfil</a>
+              <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dashboard-content">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon blue">
+                <i class="fas fa-book"></i>
+              </div>
+              <div class="stat-details">
+                <div class="stat-value">12</div>
+                <div class="stat-label">Cursos Cadastrados</div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon green">
+                <i class="fas fa-user-graduate"></i>
+              </div>
+              <div class="stat-details">
+                <div class="stat-value">48</div>
+                <div class="stat-label">Alunos Registrados</div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon orange">
+                <i class="fas fa-certificate"></i>
+              </div>
+              <div class="stat-details">
+                <div class="stat-value">36</div>
+                <div class="stat-label">Certificados Emitidos</div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon red">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="stat-details">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Pendentes</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Certificados Recentes</h2>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Aluno</th>
+                      <th>Curso</th>
+                      <th>Data de Emissão</th>
+                      <th>Código</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>João Silva</td>
+                      <td>Desenvolvimento Web</td>
+                      <td>05/10/2023</td>
+                      <td>CERT-12345</td>
+                      <td>
+                        <div class="action-btns">
+                          <button class="btn-icon btn-edit"><i class="fas fa-eye"></i></button>
+                          <button class="btn-icon btn-edit"><i class="fas fa-file-pdf"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Maria Oliveira</td>
+                      <td>UX/UI Design</td>
+                      <td>02/10/2023</td>
+                      <td>CERT-12344</td>
+                      <td>
+                        <div class="action-btns">
+                          <button class="btn-icon btn-edit"><i class="fas fa-eye"></i></button>
+                          <button class="btn-icon btn-edit"><i class="fas fa-file-pdf"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Pedro Santos</td>
+                      <td>Python Avançado</td>
+                      <td>01/10/2023</td>
+                      <td>CERT-12343</td>
+                      <td>
+                        <div class="action-btns">
+                          <button class="btn-icon btn-edit"><i class="fas fa-eye"></i></button>
+                          <button class="btn-icon btn-edit"><i class="fas fa-file-pdf"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
