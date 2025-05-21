@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emitir Certificados - CertyHub</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+</head>
+<body>
+  <div id="app">
+    <div class="dashboard">
+      <button class="sidebar-toggle toggle-button-show" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <i class="fas fa-certificate"></i> CertyHub
+          </div>
+        </div>
+        <div class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="dashboard.html" class="dashboard-link">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+              </a>
+            </li>
+            <li>
+              <a href="cursos.html" class="cursos-link">
+                <i class="fas fa-book"></i> Cursos
+              </a>
+            </li>
+            <li>
+              <a href="alunos.html" class="alunos-link">
+                <i class="fas fa-user-graduate"></i> Alunos
+              </a>
+            </li>
+            <li>
+              <a href="certificados.html" class="certificados-link active">
+                <i class="fas fa-certificate"></i> Certificados
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Emitir Certificado</h1>
+          <div class="user-dropdown">
+            <span id="userName">Usuário <i class="fas fa-chevron-down"></i></span>
+            <div class="dropdown-content">
+              <a href="#"><i class="fas fa-user-circle"></i> Perfil</a>
+              <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-content">
+          <div class="header-actions">
+            <h2>Emissão de Certificado</h2>
+          </div>
+
+          <div class="form-card">
+            <form id="emitirCertificadoForm">
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="alunoSelect">Selecione o Aluno</label>
+                    <select id="alunoSelect" class="form-control" required>
+                      <option value="">Selecione um aluno</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="cursoSelect">Selecione o Curso</label>
+                    <select id="cursoSelect" class="form-control" required>
+                      <option value="">Selecione um curso</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="dataEmissao">Data de Emissão</label>
+                    <input type="date" id="dataEmissao" class="form-control" required>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label for="modeloSelect">Modelo de Certificado</label>
+                    <select id="modeloSelect" class="form-control" required>
+                      <option value="1">Modelo Padrão</option>
+                      <option value="2">Modelo Alternativo</option>
+                      <option value="3">Modelo Premium</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="btn-row">
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='certificados.html'">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Emitir Certificado</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

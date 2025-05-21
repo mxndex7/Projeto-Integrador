@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualizar Certificado - CertyHub</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  <style>
+    .certificado-container {
+      background-color: #fff;
+      border: 15px solid #233761;
+      padding: 50px;
+      margin: 20px auto;
+      max-width: 800px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+    
+    .certificado-header {
+      margin-bottom: 40px;
+    }
+    
+    .certificado-titulo {
+      font-size: 36px;
+      color: #233761;
+      margin-bottom: 10px;
+    }
+    
+    .certificado-subtitulo {
+      font-size: 24px;
+      color: #233761;
+    }
+    
+    .certificado-conteudo {
+      margin: 30px 0;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+    
+    .certificado-aluno {
+      font-size: 30px;
+      font-weight: bold;
+      color: #233761;
+      margin: 20px 0;
+    }
+    
+    .certificado-curso {
+      font-size: 22px;
+      margin: 20px 0;
+    }
+    
+    .certificado-data {
+      margin-top: 40px;
+      font-size: 16px;
+    }
+    
+    .certificado-assinatura {
+      border-top: 1px solid #233761;
+      width: 250px;
+      margin: 15px auto;
+      padding-top: 5px;
+      font-size: 14px;
+    }
+    
+    .certificado-selo {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      width: 120px;
+      height: 120px;
+      border: 2px solid #233761;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+    }
+    
+    .certificado-codigo {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      gap: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="dashboard">
+      <button class="sidebar-toggle toggle-button-show" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <i class="fas fa-certificate"></i> CertyHub
+          </div>
+        </div>
+        <div class="sidebar-menu">
+          <ul>
+            <li>
+              <a href="dashboard.html" class="dashboard-link">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+              </a>
+            </li>
+            <li>
+              <a href="cursos.html" class="cursos-link">
+                <i class="fas fa-book"></i> Cursos
+              </a>
+            </li>
+            <li>
+              <a href="alunos.html" class="alunos-link">
+                <i class="fas fa-user-graduate"></i> Alunos
+              </a>
+            </li>
+            <li>
+              <a href="certificados.html" class="certificados-link active">
+                <i class="fas fa-certificate"></i> Certificados
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="main-content">
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Visualizar Certificado</h1>
+          <div class="user-dropdown">
+            <span id="userName">Usuário <i class="fas fa-chevron-down"></i></span>
+            <div class="dropdown-content">
+              <a href="#"><i class="fas fa-user-circle"></i> Perfil</a>
+              <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dashboard-content">
+          <div class="header-actions">
+            <h2>Certificado Emitido</h2>
+            <div class="action-buttons">
+              <button class="btn btn-secondary" onclick="window.location.href='certificados.html'">
+                <i class="fas fa-arrow-left"></i> Voltar
+              </button>
+              <button class="btn btn-primary" id="downloadPDF">
+                <i class="fas fa-file-pdf"></i> Download PDF
+              </button>
+              <button class="btn btn-primary" id="enviarEmail">
+                <i class="fas fa-envelope"></i> Enviar por Email
+              </button>
+            </div>
+          </div>
+          
+          <div id="certificado-preview">
+            <div class="certificado-container">
+              <div class="certificado-header">
+                <div class="certificado-titulo">CERTIFICADO</div>
+                <div class="certificado-subtitulo">DE CONCLUSÃO DE CURSO</div>
+              </div>
+              
+              <div class="certificado-conteudo">
+                Certificamos que
+                <div class="certificado-aluno" id="certificadoAluno">Nome do Aluno</div>
+                concluiu com sucesso o curso de
+                <div class="certificado-curso" id="certificadoCurso">Nome do Curso</div>
+                com carga horária de <span id="certificadoCargaHoraria">XX</span> horas.
+              </div>
+              
+              <div class="certificado-data" id="certificadoData">São Paulo, 01 de Janeiro de 2023</div>
+              
+              <div class="certificado-assinatura">
+                Assinatura do Responsável
+              </div>
+              
+              <div class="certificado-selo">
+                CERTYHUB<br>CERTIFICAÇÃO
+              </div>
+              
+              <div class="certificado-codigo" id="certificadoCodigo">
+                Código de Verificação: CERT-XXXXX
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

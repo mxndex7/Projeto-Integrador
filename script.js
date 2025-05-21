@@ -14,6 +14,16 @@ function checkAuth() {
   return false;
 }
 
+function gerarCodigoCertificado() {
+  const timestamp = new Date().getTime().toString().slice(-6);
+  const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+  return `CERT-${timestamp}-${random}`;
+}
+function formatarDataExtenso(data) {
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return new Date(data).toLocaleDateString('pt-BR', options);
+}
+
 function requireAuth() {
   const currentPage = window.location.pathname.split('/').pop();
 
@@ -58,10 +68,25 @@ document.addEventListener('DOMContentLoaded', function() {
     setupNovoAlunoForm();
   }
   
-  
   const alunosTable = document.getElementById('alunosTable');
   if (alunosTable) {
     carregarAlunos();
+  }
+  
+  const emitirCertificadoForm = document.getElementById('emitirCertificadoForm');
+  if (emitirCertificadoForm) {
+    setupEmitirCertificadoForm();
+  }
+  
+  if (window.location.pathname.includes('certificados.html')) {
+    carregarCertificados();
+  }
+  if (window.location.pathname.includes('certificado-view.html')) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const certificadoId = urlParams.get('id');
+    if (certificadoId) {
+      carregarCertificadoView(certificadoId);
+    }
   }
 });
 
@@ -274,6 +299,163 @@ function excluirAluno(id) {
   }
 }
 
+
+function setupEmitirCertificadoForm() {
+  const alunoSelect = document.getElementById('alunoSelect');
+  const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+  
+  alunos.forEach(aluno => {
+    const option = document.createElement('option');
+    option.value = aluno.id;
+    option.textContent = aluno.nome;
+    alunoSelect.appendChild(option);
+  });
+  
+  const cursoSelect = document.getElementById('cursoSelect');
+  const cursos = [
+    { id: 1, nome: 'Desenvolvimento Web', cargaHoraria: 60 },
+    { id: 2, nome: 'UX/UI Design', cargaHoraria: 40 },
+    { id: 3, nome: 'Python Avançado', cargaHoraria: 80 }
+  ];
+  
+  cursos.forEach(curso => {
+    const option = document.createElement('option');
+    option.value = curso.id;
+    option.textContent = curso.nome;
+    cursoSelect.appendChild(option);
+  });
+  
+  const dataEmissao = document.getElementById('dataEmissao');
+  const hoje = new Date().toISOString().split('T')[0];
+  dataEmissao.value = hoje;
+  
+  document.getElementById('emitirCertificadoForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const alunoId = alunoSelect.value;
+    const cursoId = cursoSelect.value;
+    const dataEmissaoValue = dataEmissao.value;
+    const modeloId = document.getElementById('modeloSelect').value;
+    
+    if (!alunoId || !cursoId || !dataEmissaoValue) {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+    
+    // Encontrar aluno e curso
+    const aluno = alunos.find(a => a.id == alunoId);
+    const curso = cursos.find(c => c.id == cursoId);
+    
+    if (!aluno || !curso) {
+      alert('Aluno ou curso não encontrado.');
+      return;
+    }
+    
+    const certificado = {
+      id: Date.now(),
+      alunoId: parseInt(alunoId),
+      alunoNome: aluno.nome,
+      cursoId: parseInt(cursoId),
+      cursoNome: curso.nome,
+      cargaHoraria: curso.cargaHoraria,
+      dataEmissao: dataEmissaoValue,
+      codigo: gerarCodigoCertificado(),
+      modeloId: parseInt(modeloId),
+      status: 'Emitido'
+    };
+    
+    const certificados = JSON.parse(localStorage.getItem('certificados')) || [];
+    certificados.push(certificado);
+    localStorage.setItem('certificados', JSON.stringify(certificados));
+    
+    window.location.href = `certificado-view.html?id=${certificado.id}`;
+  });
+}
+
+function carregarCertificados() {
+  const certificados = JSON.parse(localStorage.getItem('certificados')) || [];
+  const tbody = document.querySelector('table tbody');
+  
+  if (!tbody) return;
+  
+  tbody.innerHTML = '';
+  
+  if (certificados.length === 0) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td colspan="6" class="text-center">Nenhum certificado emitido</td>';
+    tbody.appendChild(tr);
+    return;
+  }
+  
+  certificados.forEach(certificado => {
+    const tr = document.createElement('tr');
+    const dataFormatada = new Date(certificado.dataEmissao).toLocaleDateString('pt-BR');
+    
+    tr.innerHTML = `
+      <td>${certificado.alunoNome || 'N/A'}</td>
+      <td>${certificado.cursoNome || 'N/A'}</td>
+      <td>${dataFormatada}</td>
+      <td>${certificado.codigo}</td>
+      <td>${certificado.status}</td>
+      <td>
+        <div class="action-btns">
+          <button class="btn-icon btn-view" data-id="${certificado.id}"><i class="fas fa-eye"></i></button>
+          <button class="btn-icon btn-pdf" data-id="${certificado.id}"><i class="fas fa-file-pdf"></i></button>
+          <button class="btn-icon btn-email" data-id="${certificado.id}"><i class="fas fa-envelope"></i></button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  
+  document.querySelectorAll('.btn-view').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      window.location.href = `certificado-view.html?id=${id}`;
+    });
+  });
+  
+  document.querySelectorAll('.btn-pdf').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      alert('Funcionalidade de download de PDF será implementada em breve.');
+    });
+  });
+  
+  document.querySelectorAll('.btn-email').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      alert('Funcionalidade de envio por email será implementada em breve.');
+    });
+  });
+}
+
+function carregarCertificadoView(certificadoId) {
+  const certificados = JSON.parse(localStorage.getItem('certificados')) || [];
+  const certificado = certificados.find(c => c.id == certificadoId);
+  
+  if (!certificado) {
+    alert('Certificado não encontrado!');
+    window.location.href = 'certificados.html';
+    return;
+  }
+  
+  // Preencher os dados do certificado na visualização
+  document.getElementById('certificadoAluno').textContent = certificado.alunoNome;
+  document.getElementById('certificadoCurso').textContent = certificado.cursoNome;
+  document.getElementById('certificadoCargaHoraria').textContent = certificado.cargaHoraria;
+  document.getElementById('certificadoData').textContent = formatarDataExtenso(certificado.dataEmissao);
+  document.getElementById('certificadoCodigo').textContent = `Código de Verificação: ${certificado.codigo}`;
+  
+  // Configurar botões de ação
+  document.getElementById('downloadPDF').addEventListener('click', function() {
+    alert('Funcionalidade de download de PDF será implementada em breve.');
+  });
+  
+  document.getElementById('enviarEmail').addEventListener('click', function() {
+    alert('Funcionalidade de envio por email será implementada em breve.');
+  });
+}
 
 function setupSidebar() {
   const sidebarToggle = document.getElementById('sidebarToggle');
