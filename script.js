@@ -88,6 +88,11 @@ document.addEventListener('DOMContentLoaded', function() {
       carregarCertificadoView(certificadoId);
     }
   }
+  
+  if (window.location.pathname.includes('dashboard.html')) {
+    carregarDashboardEstatisticas();
+    carregarCertificadosRecentes();
+  }
 });
 
 
@@ -179,7 +184,6 @@ function setupNovoAlunoForm() {
     
     console.log("Dados do aluno:", aluno);
     
-  
     const cursosSelect = document.getElementById('cursos');
     aluno.cursos = [];
     
@@ -342,7 +346,6 @@ function setupEmitirCertificadoForm() {
       return;
     }
     
-    // Encontrar aluno e curso
     const aluno = alunos.find(a => a.id == alunoId);
     const curso = cursos.find(c => c.id == cursoId);
     
@@ -440,20 +443,86 @@ function carregarCertificadoView(certificadoId) {
     return;
   }
   
-  // Preencher os dados do certificado na visualização
   document.getElementById('certificadoAluno').textContent = certificado.alunoNome;
   document.getElementById('certificadoCurso').textContent = certificado.cursoNome;
   document.getElementById('certificadoCargaHoraria').textContent = certificado.cargaHoraria;
   document.getElementById('certificadoData').textContent = formatarDataExtenso(certificado.dataEmissao);
   document.getElementById('certificadoCodigo').textContent = `Código de Verificação: ${certificado.codigo}`;
   
-  // Configurar botões de ação
   document.getElementById('downloadPDF').addEventListener('click', function() {
     alert('Funcionalidade de download de PDF será implementada em breve.');
   });
   
   document.getElementById('enviarEmail').addEventListener('click', function() {
     alert('Funcionalidade de envio por email será implementada em breve.');
+  });
+}
+
+function carregarDashboardEstatisticas() {
+  const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+  const certificados = JSON.parse(localStorage.getItem('certificados')) || [];
+  
+  const totalAlunos = alunos.length;
+  const totalCertificados = certificados.length;
+  
+  const agora = new Date();
+  const mesAtual = agora.getMonth();
+  const anoAtual = agora.getFullYear();
+  
+  const certificadosEstesMes = certificados.filter(cert => {
+    const dataCert = new Date(cert.dataEmissao);
+    return dataCert.getMonth() === mesAtual && dataCert.getFullYear() === anoAtual;
+  }).length;
+  
+  const totalAlunosEl = document.getElementById('totalAlunos');
+  const totalCertificadosEl = document.getElementById('totalCertificados');
+  const certificadosEsteMesEl = document.getElementById('certificadosEstesMes');
+  
+  if (totalAlunosEl) totalAlunosEl.textContent = totalAlunos;
+  if (totalCertificadosEl) totalCertificadosEl.textContent = totalCertificados;
+  if (certificadosEsteMesEl) certificadosEsteMesEl.textContent = certificadosEstesMes;
+}
+
+function carregarCertificadosRecentes() {
+  const certificados = JSON.parse(localStorage.getItem('certificados')) || [];
+  const tbody = document.getElementById('certificadosRecentesTable');
+  
+  if (!tbody) return;
+  
+  tbody.innerHTML = '';
+  
+  if (certificados.length === 0) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td colspan="5" class="text-center">Nenhum certificado emitido</td>';
+    tbody.appendChild(tr);
+    return;
+  }
+  
+  const certificadosRecentes = certificados
+    .sort((a, b) => new Date(b.dataEmissao) - new Date(a.dataEmissao))
+    .slice(0, 5);
+  
+  certificadosRecentes.forEach(certificado => {
+    const tr = document.createElement('tr');
+    const dataFormatada = new Date(certificado.dataEmissao).toLocaleDateString('pt-BR');
+    
+    tr.innerHTML = `
+      <td>${certificado.alunoNome || 'N/A'}</td>
+      <td>${certificado.cursoNome || 'N/A'}</td>
+      <td>${dataFormatada}</td>
+      <td>${certificado.codigo}</td>
+      <td>
+        <div class="action-btns">
+          <button class="btn-icon btn-edit" onclick="window.location.href='certificado-view.html?id=${certificado.id}'">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button class="btn-icon btn-edit" onclick="alert('Download PDF em desenvolvimento')">
+            <i class="fas fa-file-pdf"></i>
+          </button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
   });
 }
 

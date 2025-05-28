@@ -66,7 +66,7 @@
                 <i class="fas fa-book"></i>
               </div>
               <div class="stat-details">
-                <div class="stat-value">12</div>
+                <div class="stat-value" id="totalCursos">3</div>
                 <div class="stat-label">Cursos Cadastrados</div>
               </div>
             </div>
@@ -76,7 +76,7 @@
                 <i class="fas fa-user-graduate"></i>
               </div>
               <div class="stat-details">
-                <div class="stat-value">48</div>
+                <div class="stat-value" id="totalAlunos">0</div>
                 <div class="stat-label">Alunos Registrados</div>
               </div>
             </div>
@@ -86,18 +86,18 @@
                 <i class="fas fa-certificate"></i>
               </div>
               <div class="stat-details">
-                <div class="stat-value">36</div>
+                <div class="stat-value" id="totalCertificados">0</div>
                 <div class="stat-label">Certificados Emitidos</div>
               </div>
             </div>
             
             <div class="stat-card">
-              <div class="stat-icon red">
-                <i class="fas fa-clock"></i>
+              <div class="stat-icon blue">
+                <i class="fas fa-calendar-check"></i>
               </div>
               <div class="stat-details">
-                <div class="stat-value">5</div>
-                <div class="stat-label">Pendentes</div>
+                <div class="stat-value" id="certificadosEstesMes">0</div>
+                <div class="stat-label">Certificados Este Mês</div>
               </div>
             </div>
           </div>
@@ -118,43 +118,8 @@
                       <th>Ações</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td>João Silva</td>
-                      <td>Desenvolvimento Web</td>
-                      <td>05/10/2023</td>
-                      <td>CERT-12345</td>
-                      <td>
-                        <div class="action-btns">
-                          <button class="btn-icon btn-edit"><i class="fas fa-eye"></i></button>
-                          <button class="btn-icon btn-edit"><i class="fas fa-file-pdf"></i></button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Maria Oliveira</td>
-                      <td>UX/UI Design</td>
-                      <td>02/10/2023</td>
-                      <td>CERT-12344</td>
-                      <td>
-                        <div class="action-btns">
-                          <button class="btn-icon btn-edit"><i class="fas fa-eye"></i></button>
-                          <button class="btn-icon btn-edit"><i class="fas fa-file-pdf"></i></button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Pedro Santos</td>
-                      <td>Python Avançado</td>
-                      <td>01/10/2023</td>
-                      <td>CERT-12343</td>
-                      <td>
-                        <div class="action-btns">
-                          <button class="btn-icon btn-edit"><i class="fas fa-eye"></i></button>
-                          <button class="btn-icon btn-edit"><i class="fas fa-file-pdf"></i></button>
-                        </div>
-                      </td>
-                    </tr>
+                  <tbody id="certificadosRecentesTable">
+                    <!-- Certificados recentes serão carregados dinamicamente -->
                   </tbody>
                 </table>
               </div>

@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validação de Certificado - CertyHub</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  <style>
+    .validation-container {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      padding: 2rem;
+    }
+    
+    .validation-card {
+      background-color: var(--bg-secondary);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 600px;
+      padding: 3rem;
+      text-align: center;
+    }
+    
+    .validation-logo {
+      font-size: 4rem;
+      color: var(--accent-color);
+      margin-bottom: 1.5rem;
+    }
+    
+    .validation-title {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+    
+    .validation-subtitle {
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+    
+    .validation-form {
+      margin-bottom: 2rem;
+    }
+    
+    .validation-input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.3s;
+    }
+    
+    .validation-input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+    
+    .validation-btn {
+      width: 100%;
+      padding: 1rem 2rem;
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .validation-btn:hover {
+      background-color: #247cc0;
+    }
+    
+    .validation-result {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      border-radius: 8px;
+      display: none;
+    }
+    
+    .result-success {
+      background-color: rgba(76, 175, 80, 0.1);
+      border: 1px solid var(--success-color);
+      color: var(--success-color);
+    }
+    
+    .result-error {
+      background-color: rgba(244, 67, 54, 0.1);
+      border: 1px solid var(--error-color);
+      color: var(--error-color);
+    }
+    
+    .certificate-details {
+      text-align: left;
+      margin-top: 1rem;
+    }
+    
+    .certificate-details h3 {
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+    
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .detail-label {
+      font-weight: bold;
+      color: var(--text-secondary);
+    }
+    
+    .detail-value {
+      color: var(--text-primary);
+    }
+    
+    .back-link {
+      margin-top: 2rem;
+      display: inline-block;
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .back-link:hover {
+      color: #247cc0;
+    }
+  </style>
+</head>
+<body>
+  <div class="validation-container">
+    <div class="validation-card">
+      <div class="validation-logo">
+        <i class="fas fa-certificate"></i>
+      </div>
+      <h1 class="validation-title">CertyHub</h1>
+      <p class="validation-subtitle">Validação de Certificados</p>
+      
+      <form class="validation-form" id="validationForm">
+        <input 
+          type="text" 
+          class="validation-input" 
+          id="codigoCertificado" 
+          placeholder="Digite o código do certificado (ex: CERT-123456-7890)"
+          required
+        >
+        <button type="submit" class="validation-btn">
+          <i class="fas fa-search"></i> Validar Certificado
+        </button>
+      </form>
+      
+      <div class="validation-result" id="validationResult">
+        <!-- Resultado da validação será inserido aqui -->
+      </div>
+      
+      <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Voltar ao Sistema
+      </a>
+    </div>
+  </div>
+  
+  <script>
+    document.getElementById('validationForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const codigo = document.getElementById('codigoCertificado').value.trim();
+      const resultDiv = document.getElementById('validationResult');
+      
+      if (!codigo) {
+        showError('Por favor, digite um código de certificado.');
+        return;
+      }
+      
+      // Buscar certificado no localStorage
+      const certificados = JSON.parse(localStorage.getItem('certificados')) || [];
+      const certificado = certificados.find(cert => cert.codigo === codigo);
+      
+      if (certificado) {
+        showSuccess(certificado);
+      } else {
+        showError('Certificado não encontrado. Verifique o código e tente novamente.');
+      }
+    });
+    
+    function showSuccess(certificado) {
+      const resultDiv = document.getElementById('validationResult');
+      const dataFormatada = new Date(certificado.dataEmissao).toLocaleDateString('pt-BR');
+      
+      resultDiv.innerHTML = `
+        <div class="result-success">
+          <h3><i class="fas fa-check-circle"></i> Certificado Válido</h3>
+          <div class="certificate-details">
+            <div class="detail-row">
+              <span class="detail-label">Aluno:</span>
+              <span class="detail-value">${certificado.alunoNome}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Curso:</span>
+              <span class="detail-value">${certificado.cursoNome}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Carga Horária:</span>
+              <span class="detail-value">${certificado.cargaHoraria} horas</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Data de Emissão:</span>
+              <span class="detail-value">${dataFormatada}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Código:</span>
+              <span class="detail-value">${certificado.codigo}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Status:</span>
+              <span class="detail-value">${certificado.status}</span>
+            </div>
+          </div>
+        </div>
+      `;
+      resultDiv.style.display = 'block';
+    }
+    
+    function showError(message) {
+      const resultDiv = document.getElementById('validationResult');
+      resultDiv.innerHTML = `
+        <div class="result-error">
+          <h3><i class="fas fa-times-circle"></i> Certificado Inválido</h3>
+          <p>${message}</p>
+        </div>
+      `;
+      resultDiv.style.display = 'block';
+    }
+  </script>
+</body>
+</html>
