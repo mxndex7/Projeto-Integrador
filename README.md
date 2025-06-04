@@ -207,6 +207,10 @@ certyhub/
   - Não requer autenticação
   - Interface limpa e focada
   - Verificação em tempo real
+ 
+## Demonstração
+
+O site pode ser visualizado em: https://certyhubsite.netlify.app/
 
 ## 🐛 Limitações Conhecidas
 
