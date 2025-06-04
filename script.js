@@ -1,4 +1,112 @@
 
+// Função para gerar PDF do certificado
+function gerarPDFCertificado(certificadoId) {
+  const certificados = getAdminData('certificados');
+  const certificado = certificados.find(c => c.id == certificadoId);
+  
+  if (!certificado) {
+    alert('Certificado não encontrado!');
+    return;
+  }
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  
+  canvas.width = 1123;
+  canvas.height = 794;
+  
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  ctx.strokeStyle = '#2c5aa0';
+  ctx.lineWidth = 15;
+  ctx.strokeRect(15, 15, canvas.width - 30, canvas.height - 30);
+  
+  ctx.fillStyle = '#2c5aa0';
+  ctx.font = 'bold 48px serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('CERTIFICADO', canvas.width / 2, 120);
+  
+  ctx.font = '24px serif';
+  ctx.fillStyle = '#666666';
+  ctx.fillText('DE CONCLUSÃO DE CURSO', canvas.width / 2, 160);
+  
+  ctx.font = '18px serif';
+  ctx.fillStyle = '#333333';
+  ctx.fillText('Certificamos que', canvas.width / 2, 220);
+  
+  ctx.font = 'bold 32px serif';
+  ctx.fillStyle = '#2c5aa0';
+  ctx.fillText(certificado.alunoNome.toUpperCase(), canvas.width / 2, 280);
+  
+  ctx.strokeStyle = '#2c5aa0';
+  ctx.lineWidth = 2;
+  const nomeWidth = ctx.measureText(certificado.alunoNome.toUpperCase()).width;
+  ctx.beginPath();
+  ctx.moveTo((canvas.width - nomeWidth) / 2, 290);
+  ctx.lineTo((canvas.width + nomeWidth) / 2, 290);
+  ctx.stroke();
+  
+  ctx.font = '18px serif';
+  ctx.fillStyle = '#333333';
+  ctx.fillText('concluiu com sucesso o curso de', canvas.width / 2, 340);
+  
+  ctx.font = 'bold 24px serif';
+  ctx.fillStyle = '#d4850c';
+  ctx.fillText(certificado.cursoNome, canvas.width / 2, 380);
+  
+  ctx.font = '18px serif';
+  ctx.fillStyle = '#333333';
+  ctx.fillText(`com carga horária de ${certificado.cargaHoraria} horas.`, canvas.width / 2, 420);
+  
+  ctx.font = '16px serif';
+  ctx.fillStyle = '#666666';
+  ctx.fillText(formatarDataExtenso(certificado.dataEmissao), canvas.width / 2, 500);
+  
+  ctx.strokeStyle = '#333333';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(canvas.width / 2 - 150, 580);
+  ctx.lineTo(canvas.width / 2 + 150, 580);
+  ctx.stroke();
+  
+  ctx.font = '14px serif';
+  ctx.fillStyle = '#666666';
+  ctx.fillText('Assinatura do Responsável', canvas.width / 2, 600);
+  
+  ctx.strokeStyle = '#d4850c';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(canvas.width - 150, 150, 50, 0, 2 * Math.PI);
+  ctx.stroke();
+  
+  ctx.font = 'bold 12px serif';
+  ctx.fillStyle = '#d4850c';
+  ctx.textAlign = 'center';
+  ctx.fillText('CERTYHUB', canvas.width - 150, 145);
+  ctx.fillText('CERTIFICAÇÃO', canvas.width - 150, 160);
+  
+  ctx.font = '12px serif';
+  ctx.fillStyle = '#666666';
+  ctx.textAlign = 'center';
+  ctx.fillText(`Código de Verificação: ${certificado.codigo}`, canvas.width / 2, canvas.height - 30);
+  
+  canvas.toBlob(function(blob) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `certificado-${certificado.alunoNome.replace(/\s+/g, '-').toLowerCase()}-${certificado.codigo}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    alert('Certificado baixado com sucesso!');
+  }, 'image/pdf');
+}
+
+
+
 function checkAuth() {
   const user = localStorage.getItem('user');
   if (user) {
@@ -14,6 +122,40 @@ function checkAuth() {
   return false;
 }
 
+function validarCPF(cpf) {
+  // Remove caracteres não numéricos
+  const cpfNumeros = cpf.replace(/\D/g, '');
+  
+  // Verifica se tem 11 dígitos
+  if (cpfNumeros.length !== 11) {
+    return false;
+  }
+  
+  // Verifica se todos os dígitos são iguais (CPF inválido)
+  if (/^(\d)\1{10}$/.test(cpfNumeros)) {
+    return false;
+  }
+  
+  // Validação dos dígitos verificadores
+  let soma = 0;
+  for (let i = 0; i < 9; i++) {
+    soma += parseInt(cpfNumeros.charAt(i)) * (10 - i);
+  }
+  let resto = (soma * 10) % 11;
+  if (resto === 10 || resto === 11) resto = 0;
+  if (resto !== parseInt(cpfNumeros.charAt(9))) return false;
+  
+  soma = 0;
+  for (let i = 0; i < 10; i++) {
+    soma += parseInt(cpfNumeros.charAt(i)) * (11 - i);
+  }
+  resto = (soma * 10) % 11;
+  if (resto === 10 || resto === 11) resto = 0;
+  if (resto !== parseInt(cpfNumeros.charAt(10))) return false;
+  
+  return true;
+}
+
 function gerarCodigoCertificado() {
   const timestamp = new Date().getTime().toString().slice(-6);
   const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
@@ -27,17 +169,33 @@ function formatarDataExtenso(data) {
 function requireAuth() {
   const currentPage = window.location.pathname.split('/').pop();
 
-  if (currentPage !== 'index.html' && currentPage !== 'register.html' && !checkAuth()) {
+  if (currentPage !== 'index.html' && currentPage !== 'validacao.html' && !checkAuth()) {
     window.location.href = 'index.html';
     return false;
   }
 
-  if ((currentPage === 'index.html' || currentPage === 'register.html') && checkAuth()) {
+  if (currentPage === 'index.html' && checkAuth()) {
     window.location.href = 'dashboard.html';
     return false;
   }
 
   return true;
+}
+
+// Funções para isolamento de dados por admin
+function getAdminDataKey(dataType) {
+  const currentAdminId = localStorage.getItem('currentAdminId') || 'admin';
+  return `${dataType}_${currentAdminId}`;
+}
+
+function getAdminData(dataType) {
+  const key = getAdminDataKey(dataType);
+  return JSON.parse(localStorage.getItem(key)) || [];
+}
+
+function setAdminData(dataType, data) {
+  const key = getAdminDataKey(dataType);
+  localStorage.setItem(key, JSON.stringify(data));
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -93,6 +251,10 @@ document.addEventListener('DOMContentLoaded', function() {
     carregarDashboardEstatisticas();
     carregarCertificadosRecentes();
   }
+  
+  if (window.location.pathname.includes('cursos.html')) {
+    carregarCursos();
+  }
 });
 
 
@@ -100,26 +262,51 @@ function setupLoginForm() {
   document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    const email = document.getElementById('email').value;
+    const username = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    if (email && password) {
+    // Buscar administradores cadastrados
+    const admins = JSON.parse(localStorage.getItem('admins')) || [];
+    
+    // Verificar admin padrão
+    if (username === 'admin' && password === '123456') {
       const user = {
-        id: 1,
-        name: 'Administrador',
-        email: email,
+        id: 'admin',
+        name: 'Administrador Principal',
+        username: 'admin',
         role: 'admin'
       };
 
       localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('currentAdminId', 'admin');
       window.location.href = 'dashboard.html';
+      return;
+    }
+
+    // Verificar admin cadastrado
+    const admin = admins.find(a => a.username === username && a.password === password);
+    if (admin) {
+      const user = {
+        id: admin.id,
+        name: admin.name,
+        username: admin.username,
+        role: 'admin'
+      };
+
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('currentAdminId', admin.id);
+      window.location.href = 'dashboard.html';
+    } else {
+      alert('Credenciais inválidas!');
     }
   });
 }
 
-
 function setupRegisterForm() {
-  document.getElementById('registerForm').addEventListener('submit', function(e) {
+  const form = document.getElementById('registerForm');
+  if (!form) return;
+
+  form.addEventListener('submit', function(e) {
     e.preventDefault();
 
     const name = document.getElementById('name').value;
@@ -128,29 +315,93 @@ function setupRegisterForm() {
     const confirmPassword = document.getElementById('confirmPassword').value;
 
     if (password !== confirmPassword) {
-      alert('As senhas não coincidem');
+      alert('As senhas não coincidem!');
       return;
     }
 
-    if (name && email && password) {
-      const user = {
-        id: 1,
-        name: name,
-        email: email,
-        role: 'admin'
-      };
-
-      localStorage.setItem('user', JSON.stringify(user));
-      window.location.href = 'dashboard.html';
+    const admins = JSON.parse(localStorage.getItem('admins')) || [];
+    
+    // Verificar se já existe admin com esse email
+    if (admins.find(a => a.username === email)) {
+      alert('Já existe um administrador com este usuário!');
+      return;
     }
+
+    const newAdmin = {
+      id: Date.now().toString(),
+      name: name,
+      username: email,
+      password: password,
+      createdAt: new Date().toISOString()
+    };
+
+    admins.push(newAdmin);
+    localStorage.setItem('admins', JSON.stringify(admins));
+
+    alert('Administrador cadastrado com sucesso!');
+    window.location.href = 'index.html';
   });
 }
 
 
+
+
+
 function setupNovoCursoForm() {
+  // Verificar se é edição
+  const urlParams = new URLSearchParams(window.location.search);
+  const cursoId = urlParams.get('id');
+  
+  if (cursoId) {
+    const cursos = getAdminData('cursos');
+    const curso = cursos.find(c => c.id == cursoId);
+    
+    if (curso) {
+      document.getElementById('nomeCurso').value = curso.nome;
+      document.getElementById('cargaHoraria').value = curso.cargaHoraria;
+      document.getElementById('responsavel').value = curso.responsavel;
+      document.getElementById('descricao').value = curso.descricao;
+      document.getElementById('dataInicio').value = curso.dataInicio;
+      document.getElementById('dataFim').value = curso.dataFim;
+      document.getElementById('modeloCertificado').value = curso.modeloCertificado;
+      
+      document.querySelector('.header-actions h2').textContent = 'Editar Curso';
+      document.querySelector('.dashboard-title').textContent = 'Editar Curso';
+      document.querySelector('button[type="submit"]').textContent = 'Atualizar Curso';
+    }
+  }
+  
   document.getElementById('novoCursoForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    alert('Curso cadastrado com sucesso!');
+    
+    const curso = {
+      id: cursoId ? parseInt(cursoId) : Date.now(),
+      nome: document.getElementById('nomeCurso').value,
+      cargaHoraria: document.getElementById('cargaHoraria').value,
+      responsavel: document.getElementById('responsavel').value,
+      descricao: document.getElementById('descricao').value,
+      dataInicio: document.getElementById('dataInicio').value,
+      dataFim: document.getElementById('dataFim').value,
+      modeloCertificado: document.getElementById('modeloCertificado').value,
+      status: 'Ativo'
+    };
+    
+    let cursos = getAdminData('cursos');
+    
+    if (cursoId) {
+      // Editar curso existente
+      const index = cursos.findIndex(c => c.id == cursoId);
+      if (index !== -1) {
+        cursos[index] = curso;
+      }
+      alert('Curso atualizado com sucesso!');
+    } else {
+      // Adicionar novo curso
+      cursos.push(curso);
+      alert('Curso cadastrado com sucesso!');
+    }
+    
+    setAdminData('cursos', cursos);
     window.location.href = 'cursos.html';
   });
 }
@@ -158,19 +409,83 @@ function setupNovoCursoForm() {
 
 function setupNovoAlunoForm() {
   const form = document.getElementById('novoAlunoForm');
+  if (!form) return;
   
-  if (!form) {
-    console.error("Formulário de novo aluno não encontrado!");
-    return;
+  const cursosSelect = document.getElementById('cursos');
+  let cursosDisponiveis = getAdminData('cursos');
+  
+  if (cursosDisponiveis.length === 0) {
+    cursosDisponiveis = [
+      { id: 1, nome: 'Desenvolvimento Front End' },
+      { id: 2, nome: 'Desenvolvimento Back End' },
+      { id: 3, nome: 'Desenvolvimento Full Stack' }
+    ];
+    setAdminData('cursos', cursosDisponiveis);
+  }
+  
+  cursosDisponiveis.forEach(curso => {
+    const option = document.createElement('option');
+    option.value = curso.id;
+    option.textContent = curso.nome;
+    cursosSelect.appendChild(option);
+  });
+  
+  const urlParams = new URLSearchParams(window.location.search);
+  const alunoId = urlParams.get('id');
+  
+  if (alunoId) {
+    const alunos = getAdminData('alunos');
+    const aluno = alunos.find(a => a.id == alunoId);
+    
+    if (aluno) {
+      document.getElementById('nomeAluno').value = aluno.nome;
+      document.getElementById('cpf').value = aluno.cpf;
+      document.getElementById('email').value = aluno.email;
+      document.getElementById('telefone').value = aluno.telefone;
+      document.getElementById('dataNascimento').value = aluno.dataNascimento;
+      document.getElementById('endereco').value = aluno.endereco;
+      document.getElementById('cidade').value = aluno.cidade;
+      document.getElementById('estado').value = aluno.estado;
+      
+      if (aluno.cursos) {
+        aluno.cursos.forEach(curso => {
+          const option = cursosSelect.querySelector(`option[value="${curso.id}"]`);
+          if (option) option.selected = true;
+        });
+      }
+      
+      document.querySelector('.header-actions h2').textContent = 'Editar Aluno';
+      document.querySelector('.dashboard-title').textContent = 'Editar Aluno';
+      document.querySelector('button[type="submit"]').textContent = 'Atualizar Aluno';
+    }
+  }
+  
+  const cpfInput = document.getElementById('cpf');
+  if (cpfInput) {
+    cpfInput.addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      
+      if (value.length <= 11) {
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+      }
+      
+      e.target.value = value;
+    });
   }
   
   form.addEventListener('submit', function(e) {
     e.preventDefault();
-    console.log("Formulário de novo aluno enviado");
     
+    const cpfValue = document.getElementById('cpf').value;
+    if (!validarCPF(cpfValue)) {
+      alert('CPF inválido! O CPF deve ter o formato XXX.XXX.XXX-XX com 11 dígitos.');
+      return;
+    }
     
     const aluno = {
-      id: Date.now(), 
+      id: alunoId ? parseInt(alunoId) : Date.now(), 
       nome: document.getElementById('nomeAluno').value,
       cpf: document.getElementById('cpf').value,
       email: document.getElementById('email').value,
@@ -179,44 +494,32 @@ function setupNovoAlunoForm() {
       endereco: document.getElementById('endereco').value,
       cidade: document.getElementById('cidade').value,
       estado: document.getElementById('estado').value,
-      dataCadastro: new Date().toISOString()
+      dataCadastro: alunoId ? (getAdminData('alunos').find(a => a.id == alunoId)?.dataCadastro || new Date().toISOString()) : new Date().toISOString(),
+      cursos: []
     };
     
-    console.log("Dados do aluno:", aluno);
-    
-    const cursosSelect = document.getElementById('cursos');
-    aluno.cursos = [];
-    
-    if (cursosSelect) {
-      for (let i = 0; i < cursosSelect.options.length; i++) {
-        if (cursosSelect.options[i].selected) {
-          aluno.cursos.push({
-            id: cursosSelect.options[i].value,
-            nome: cursosSelect.options[i].text
-          });
-        }
+    for (let i = 0; i < cursosSelect.options.length; i++) {
+      if (cursosSelect.options[i].selected) {
+        aluno.cursos.push({
+          id: cursosSelect.options[i].value,
+          nome: cursosSelect.options[i].text
+        });
       }
     }
     
-
-    try {
-      let alunos = [];
-      const alunosData = localStorage.getItem('alunos');
-      
-      if (alunosData) {
-        alunos = JSON.parse(alunosData);
-      }
-      
+    let alunos = getAdminData('alunos');
+    
+    if (alunoId) {
+      const index = alunos.findIndex(a => a.id == alunoId);
+      if (index !== -1) alunos[index] = aluno;
+      alert('Aluno atualizado com sucesso!');
+    } else {
       alunos.push(aluno);
-      localStorage.setItem('alunos', JSON.stringify(alunos));
-      console.log("Alunos salvos no localStorage:", alunos);
-      
       alert('Aluno cadastrado com sucesso!');
-      window.location.href = 'alunos.html';
-    } catch (error) {
-      console.error("Erro ao salvar aluno:", error);
-      alert('Erro ao cadastrar aluno. Verifique o console para mais detalhes.');
     }
+    
+    setAdminData('alunos', alunos);
+    window.location.href = 'alunos.html';
   });
 }
 
@@ -226,6 +529,7 @@ function setupLogout() {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', function() {
       localStorage.removeItem('user');
+      localStorage.removeItem('currentAdminId');
       window.location.href = 'index.html';
     });
   }
@@ -233,32 +537,19 @@ function setupLogout() {
 
 
 function carregarAlunos() {
-
-  console.log("Carregando alunos do localStorage...");
-  const alunosData = localStorage.getItem('alunos');
-  console.log("Dados brutos:", alunosData);
-  
-  const alunos = alunosData ? JSON.parse(alunosData) : [];
-  console.log("Alunos carregados:", alunos);
-  
+  const alunos = getAdminData('alunos');
   const tbody = document.querySelector('#alunosTable tbody');
-  if (!tbody) {
-    console.error("Elemento tbody não encontrado!");
-    return;
-  }
+  if (!tbody) return;
   
-
   tbody.innerHTML = '';
   
   if (!alunos || alunos.length === 0) {
-    console.log("Nenhum aluno encontrado");
     const tr = document.createElement('tr');
     tr.innerHTML = '<td colspan="5" class="text-center">Nenhum aluno cadastrado</td>';
     tbody.appendChild(tr);
     return;
   }
   
-
   alunos.forEach(aluno => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -276,7 +567,6 @@ function carregarAlunos() {
     tbody.appendChild(tr);
   });
   
-
   document.querySelectorAll('.btn-delete').forEach(btn => {
     btn.addEventListener('click', function() {
       const alunoId = parseInt(this.getAttribute('data-id'));
@@ -295,9 +585,9 @@ function carregarAlunos() {
 
 function excluirAluno(id) {
   if (confirm('Tem certeza que deseja excluir este aluno?')) {
-    let alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+    let alunos = getAdminData('alunos');
     alunos = alunos.filter(aluno => aluno.id !== id);
-    localStorage.setItem('alunos', JSON.stringify(alunos));
+    setAdminData('alunos', alunos);
     carregarAlunos();
     alert('Aluno excluído com sucesso!');
   }
@@ -306,7 +596,7 @@ function excluirAluno(id) {
 
 function setupEmitirCertificadoForm() {
   const alunoSelect = document.getElementById('alunoSelect');
-  const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
+  const alunos = getAdminData('alunos');
   
   alunos.forEach(aluno => {
     const option = document.createElement('option');
@@ -316,11 +606,21 @@ function setupEmitirCertificadoForm() {
   });
   
   const cursoSelect = document.getElementById('cursoSelect');
-  const cursos = [
-    { id: 1, nome: 'Desenvolvimento Web', cargaHoraria: 60 },
-    { id: 2, nome: 'UX/UI Design', cargaHoraria: 40 },
-    { id: 3, nome: 'Python Avançado', cargaHoraria: 80 }
-  ];
+  let cursos = getAdminData('cursos');
+  
+  if (cursos.length === 0) {
+    cursos = [
+      { id: 1, nome: 'Desenvolvimento Front End', cargaHoraria: 60 },
+      { id: 2, nome: 'Desenvolvimento Back End', cargaHoraria: 40 },
+      { id: 3, nome: 'Desenvolvimento Full Stack', cargaHoraria: 80 }
+    ];
+    setAdminData('cursos', cursos);
+  } else {
+    cursos = cursos.map(curso => ({
+      ...curso,
+      cargaHoraria: parseInt(curso.cargaHoraria) || 0
+    }));
+  }
   
   cursos.forEach(curso => {
     const option = document.createElement('option');
@@ -330,8 +630,7 @@ function setupEmitirCertificadoForm() {
   });
   
   const dataEmissao = document.getElementById('dataEmissao');
-  const hoje = new Date().toISOString().split('T')[0];
-  dataEmissao.value = hoje;
+  dataEmissao.value = new Date().toISOString().split('T')[0];
   
   document.getElementById('emitirCertificadoForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -367,16 +666,16 @@ function setupEmitirCertificadoForm() {
       status: 'Emitido'
     };
     
-    const certificados = JSON.parse(localStorage.getItem('certificados')) || [];
+    const certificados = getAdminData('certificados');
     certificados.push(certificado);
-    localStorage.setItem('certificados', JSON.stringify(certificados));
+    setAdminData('certificados', certificados);
     
     window.location.href = `certificado-view.html?id=${certificado.id}`;
   });
 }
 
 function carregarCertificados() {
-  const certificados = JSON.parse(localStorage.getItem('certificados')) || [];
+  const certificados = getAdminData('certificados');
   const tbody = document.querySelector('table tbody');
   
   if (!tbody) return;
@@ -404,7 +703,6 @@ function carregarCertificados() {
         <div class="action-btns">
           <button class="btn-icon btn-view" data-id="${certificado.id}"><i class="fas fa-eye"></i></button>
           <button class="btn-icon btn-pdf" data-id="${certificado.id}"><i class="fas fa-file-pdf"></i></button>
-          <button class="btn-icon btn-email" data-id="${certificado.id}"><i class="fas fa-envelope"></i></button>
         </div>
       </td>
     `;
@@ -421,20 +719,13 @@ function carregarCertificados() {
   document.querySelectorAll('.btn-pdf').forEach(btn => {
     btn.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
-      alert('Funcionalidade de download de PDF será implementada em breve.');
-    });
-  });
-  
-  document.querySelectorAll('.btn-email').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const id = this.getAttribute('data-id');
-      alert('Funcionalidade de envio por email será implementada em breve.');
+      gerarPDFCertificado(id);
     });
   });
 }
 
 function carregarCertificadoView(certificadoId) {
-  const certificados = JSON.parse(localStorage.getItem('certificados')) || [];
+  const certificados = getAdminData('certificados');
   const certificado = certificados.find(c => c.id == certificadoId);
   
   if (!certificado) {
@@ -450,17 +741,13 @@ function carregarCertificadoView(certificadoId) {
   document.getElementById('certificadoCodigo').textContent = `Código de Verificação: ${certificado.codigo}`;
   
   document.getElementById('downloadPDF').addEventListener('click', function() {
-    alert('Funcionalidade de download de PDF será implementada em breve.');
-  });
-  
-  document.getElementById('enviarEmail').addEventListener('click', function() {
-    alert('Funcionalidade de envio por email será implementada em breve.');
+    gerarPDFCertificado(certificadoId);
   });
 }
 
 function carregarDashboardEstatisticas() {
-  const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
-  const certificados = JSON.parse(localStorage.getItem('certificados')) || [];
+  const alunos = getAdminData('alunos');
+  const certificados = getAdminData('certificados');
   
   const totalAlunos = alunos.length;
   const totalCertificados = certificados.length;
@@ -484,7 +771,7 @@ function carregarDashboardEstatisticas() {
 }
 
 function carregarCertificadosRecentes() {
-  const certificados = JSON.parse(localStorage.getItem('certificados')) || [];
+  const certificados = getAdminData('certificados');
   const tbody = document.getElementById('certificadosRecentesTable');
   
   if (!tbody) return;
@@ -516,7 +803,7 @@ function carregarCertificadosRecentes() {
           <button class="btn-icon btn-edit" onclick="window.location.href='certificado-view.html?id=${certificado.id}'">
             <i class="fas fa-eye"></i>
           </button>
-          <button class="btn-icon btn-edit" onclick="alert('Download PDF em desenvolvimento')">
+          <button class="btn-icon btn-edit" onclick="gerarPDFCertificado(${certificado.id})">
             <i class="fas fa-file-pdf"></i>
           </button>
         </div>
@@ -524,6 +811,97 @@ function carregarCertificadosRecentes() {
     `;
     tbody.appendChild(tr);
   });
+}
+
+function carregarCursos() {
+  let cursos = getAdminData('cursos');
+  
+  // Se não há cursos salvos, usar os padrões
+  if (cursos.length === 0) {
+    cursos = [
+      {
+        id: 1,
+        nome: 'Desenvolvimento Front End',
+        cargaHoraria: '60',
+        responsavel: 'Professor Renan',
+        status: 'Ativo',
+        descricao: 'Curso de desenvolvimento frontend',
+        dataInicio: '2024-01-01',
+        dataFim: '2024-03-01',
+        modeloCertificado: '1'
+      },
+      {
+        id: 2,
+        nome: 'Desenvolvimento Back End',
+        cargaHoraria: '40',
+        responsavel: 'Professor Costa',
+        status: 'Ativo',
+        descricao: 'Curso de desenvolvimento backend',
+        dataInicio: '2024-02-01',
+        dataFim: '2024-04-01',
+        modeloCertificado: '1'
+      },
+      {
+        id: 3,
+        nome: 'Desenvolvimento Full Stack',
+        cargaHoraria: '80',
+        responsavel: 'Professor Alencar',
+        status: 'Ativo',
+        descricao: 'Curso de desenvolvimento fullstack',
+        dataInicio: '2024-03-01',
+        dataFim: '2024-06-01',
+        modeloCertificado: '1'
+      }
+    ];
+    setAdminData('cursos', cursos);
+  }
+  
+  const tbody = document.querySelector('table tbody');
+  if (!tbody) return;
+  
+  tbody.innerHTML = '';
+  
+  cursos.forEach(curso => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${curso.nome}</td>
+      <td>${curso.cargaHoraria}h</td>
+      <td>${curso.responsavel}</td>
+      <td>${curso.status}</td>
+      <td>
+        <div class="action-btns">
+          <button class="btn-icon btn-edit" data-id="${curso.id}"><i class="fas fa-edit"></i></button>
+          <button class="btn-icon btn-delete" data-id="${curso.id}"><i class="fas fa-trash"></i></button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  
+  // Adicionar event listeners
+  document.querySelectorAll('.btn-edit').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const cursoId = this.getAttribute('data-id');
+      window.location.href = `cursos-novo.html?id=${cursoId}`;
+    });
+  });
+  
+  document.querySelectorAll('.btn-delete').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const cursoId = parseInt(this.getAttribute('data-id'));
+      excluirCurso(cursoId);
+    });
+  });
+}
+
+function excluirCurso(id) {
+  if (confirm('Tem certeza que deseja excluir este curso?')) {
+    let cursos = getAdminData('cursos');
+    cursos = cursos.filter(curso => curso.id !== id);
+    setAdminData('cursos', cursos);
+    carregarCursos();
+    alert('Curso excluído com sucesso!');
+  }
 }
 
 function setupSidebar() {

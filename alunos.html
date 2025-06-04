@@ -66,25 +66,8 @@
               <button class="btn btn-primary" onclick="window.location.href='alunos-novo.html'">
                 <i class="fas fa-plus"></i> Novo Aluno
               </button>
-              <button class="btn btn-secondary" onclick="debugAlunos()" style="margin-left: 8px;">
-                <i class="fas fa-bug"></i> Debug Alunos
-              </button>
             </div>
           </div>
-          
-          <script>
-            function debugAlunos() {
-              const alunos = JSON.parse(localStorage.getItem('alunos')) || [];
-              console.log('Dados dos alunos:', alunos);
-              alert('Verificando dados dos alunos. Abra o console do navegador (F12) para mais detalhes.');
-              
-              if (alunos.length === 0) {
-                alert('Nenhum aluno encontrado no localStorage.');
-              } else {
-                alert(`Encontrados ${alunos.length} alunos no localStorage.`);
-              }
-            }
-          </script>
           
           <div class="card">
             <div class="card-body">
