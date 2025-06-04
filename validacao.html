@@ -185,9 +185,28 @@
         return;
       }
       
-      // Buscar certificado no localStorage
-      const certificados = JSON.parse(localStorage.getItem('certificados')) || [];
-      const certificado = certificados.find(cert => cert.codigo === codigo);
+      // Buscar certificado em todos os admins
+      let certificado = null;
+      const admins = JSON.parse(localStorage.getItem('admins')) || [];
+
+      // Verificar certificados do admin principal
+      const certificadosAdmin = JSON.parse(localStorage.getItem('certificados_admin')) || [];
+      certificado = certificadosAdmin.find(cert => cert.codigo === codigo);
+
+      // Se não encontrou, verificar certificados de outros admins
+      if (!certificado) {
+        for (const admin of admins) {
+          const certificadosAdminEspecifico = JSON.parse(localStorage.getItem(`certificados_${admin.id}`)) || [];
+          certificado = certificadosAdminEspecifico.find(cert => cert.codigo === codigo);
+          if (certificado) break;
+        }
+      }
+
+      // Verificar também no localStorage padrão (para compatibilidade)
+      if (!certificado) {
+        const certificadosPadrao = JSON.parse(localStorage.getItem('certificados')) || [];
+        certificado = certificadosPadrao.find(cert => cert.codigo === codigo);
+      }
       
       if (certificado) {
         showSuccess(certificado);
